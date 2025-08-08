@@ -6,10 +6,11 @@ const usuario = [
   { id: 2, nome: "Daniel", idade: 17 },
   { id: 3, nome: "Hyoran", idade: 18 },
   { id: 4, nome: "Hugo", idade: 40 },
-  { id: 5, nome: "Lucas", idade: 25 },  // Adicionando mais para teste
-  { id: 6, nome: "Fernanda", idade: 22 },
-  { id: 7, nome: "Julia", idade: 30 },
-  { id: 8, nome: "Carlos", idade: 50 },
+  { id: 5, nome: "Venicios", idade: 25 },  // Adicionando mais para teste
+  { id: 6, nome: "Alan", idade: 22 },
+  { id: 7, nome: "Joao", idade: 30 },
+  { id: 8, nome: "Vitor", idade: 50 },
+    { id: 8, nome: "jose", idade: 50 }
 ];
 
 export default function Index() {
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
+     backgroundColor: "#D9D9D9"
   },
 
   content: {
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
 
   pac: {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#FFFFFF",
     width: "90%",
     height: 100, 
     borderRadius: 15,

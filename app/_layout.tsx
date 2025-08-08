@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { Agenda, Grupo, Boneco} from '@/assets/components/HeroIcon'; 
+import { Agenda, Grupo, Boneco, Lixo} from '@/assets/components/HeroIcon'; 
 
 export default function RootLayout() {
   const router = useRouter();
@@ -19,20 +19,12 @@ export default function RootLayout() {
           headerTitleAlign: 'center',
         }}
       >
-        <Stack.Screen name="index" options={{ title: "ORTOS" }} />
-        <Stack.Screen
-          name="user"
-          options={{
-            headerTitle: () => (
-              <TextInput
-                style={styles.inputPesquisa}
-                placeholder="Nome ou Codigo do Paciente"
-              />
-            ),
-          }}
-        />
+        <Stack.Screen name="index" options={{ title: "AGENDA" }} />
+        
+           <Stack.Screen name="user" options={{ title: "PACIENTES" }} />
+        
 
-        <Stack.Screen name="perfil" options={{ title: "ORTOS" }} />
+        <Stack.Screen name="perfil" options={{ title: "PROCEDIMENTOS" }} />
       </Stack>
 
       <View style={styles.footer}>
