@@ -42,9 +42,8 @@ const styles = StyleSheet.create({
   proxAt: {
     backgroundColor: "#D9D9D9",
     width: "90%",
-    height: "45%",
+    height: "35%",
     borderRadius: 15,
-
     justifyContent: 'space-around',
     alignItems: "center",
     padding: 20,
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
   },
 
   dados: {
-    alignItems: 'flex-start', // alinha os textos à esquerda
+    alignItems: 'flex-start', 
     width: '100%',
     paddingHorizontal: 10,
   },
