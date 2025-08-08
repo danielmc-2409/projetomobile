@@ -1,14 +1,17 @@
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { Agenda, Grupo, Boneco, Lixo } from '@/assets/components/HeroIcon';
+import React, {useState} from 'react'
 
-const consultas = [
+
+
+export default function Index() {
+  const [consultas, setConsultas] = useState([
   { id: 1, horario: "09:00", nome: "Henrique", procedimentos: "Limpeza" },
   { id: 2, horario: "10:30", nome: "Daniel ", procedimentos: "Extração Simples" },
   { id: 3, horario: "11:15", nome: "Hyoran ", procedimentos: "Obturação" }
-];
+]);
 
-export default function Index() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Consultas do Dia</Text>
@@ -24,7 +27,7 @@ export default function Index() {
               <Text style={styles.botaoTexto}>Marcar como atendido</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.lixo}>
+            <TouchableOpacity style={styles.lixo} onPress={() => setConsultas(consultas.filter(item => item.id !== user.id))} >
               <Lixo size={30} color="black" />
             </TouchableOpacity>
           </View>
