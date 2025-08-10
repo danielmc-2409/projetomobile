@@ -19,14 +19,15 @@ export default function RootLayout() {
           headerTitleAlign: 'center',
         }}
       >
-        <Stack.Screen name="index" options={{ title: "AGENDA" }} />
+        <Stack.Screen name="index" options={{ title: "Agenda" }} />
         
-           <Stack.Screen name="user" options={{ title: "PACIENTES" }} />
+           <Stack.Screen name="user" options={{ title: "Pacientes" }} />
         
 
-        <Stack.Screen name="perfil" options={{ title: "PROCEDIMENTOS" }} />
+        <Stack.Screen name="perfil" options={{ title: "Procedimentos" }} />
 
               <Stack.Screen name="perfpaci" options={{ title: "Perfil do Paciente" }} />
+                <Stack.Screen name="prontuarios" options={{ title: "Prontuários" }} />
       </Stack>
 
       <View style={styles.footer}>
