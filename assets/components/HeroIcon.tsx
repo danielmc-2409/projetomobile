@@ -2,19 +2,12 @@ import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 
 interface HeroIconProps {
-  size?: number;  // Tamanho do ícone, tipo opcional
-  color?: string; // Cor do ícone, tipo opcional
+  size?: number;
+  color?: string;
 }
 
-// Componente Agenda
 const Agenda: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-  <Svg
-
-    viewBox="0 0 24 24"
-    fill="none"
-    width={size} // Define o tamanho
-    height={size} // Define o tamanho
-  >
+  <Svg viewBox="0 0 24 24" fill="none" width={size} height={size}>
     <Path
       d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
       fill={color}
@@ -28,10 +21,8 @@ const Agenda: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
   </Svg>
 );
 
-// Componente Grupo
 const Grupo: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
   <Svg
-   
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
@@ -48,62 +39,80 @@ const Grupo: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
 );
 
 const Boneco: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-<svg
- xmlns="http://www.w3.org/2000/svg"
-  fill="none"
-   viewBox="0 0 24 24" 
-   strokeWidth={1.5}
-    stroke="currentColor" 
-     className="size-6"
-width={30}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-</svg>
+  <Svg
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke={color}
+    width={size}
+    height={size}
+  >
+    <Path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+    />
+  </Svg>
 );
-
-
 
 const Lapis: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" width={30}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-</svg>
-
+  <Svg
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke={color}
+    width={size}
+    height={size}
+  >
+    <Path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+    />
+  </Svg>
 );
-
 
 const Plus: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-
- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" width={30}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-</svg>
-
+  <Svg
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke={color}
+    width={size}
+    height={size}
+  >
+    <Path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+  </Svg>
 );
-
 
 const Lixo: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" width={30}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-</svg>
-
-
+  <Svg
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke={color}
+    width={size}
+    height={size}
+  >
+    <Path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+    />
+  </Svg>
 );
-
-
-
-
 
 const Seta: React.FC<HeroIconProps> = ({ size = 24, color = 'black' }) => (
-
-
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" width={30}>
-  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-</svg>
-
+  <Svg
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke={color}
+    width={size}
+    height={size}
+  >
+    <Path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+  </Svg>
 );
 
-
-
-
-// Exportando ambos os componentes
-export { Agenda, Grupo, Boneco, Lapis, Plus, Lixo, Seta};
+export { Agenda, Grupo, Boneco, Lapis, Plus, Lixo, Seta };

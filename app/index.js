@@ -1,16 +1,19 @@
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import { Agenda, Grupo, Boneco, Lixo } from '@/assets/components/HeroIcon';
-import React, {useState} from 'react'
+import { Lixo } from '@/assets/components/HeroIcon';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 
 export default function Index() {
-  const [consultas, setConsultas] = useState([
-  { id: 1, horario: "09:00", nome: "Henrique", procedimentos: "Limpeza" },
-  { id: 2, horario: "10:30", nome: "Daniel ", procedimentos: "Extração Simples" },
-  { id: 3, horario: "11:15", nome: "Hyoran ", procedimentos: "Obturação" }
-]);
+  const [consultas, setConsultas] = useState([]);
+
+  const getConsultas = async () => {
+    const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/teste");
+    const pacientes = await response.json();
+    setConsultas(pacientes.data);
+  }
+
+  useEffect(() => {getConsultas()}, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -19,8 +22,8 @@ export default function Index() {
       {consultas.map((user) => (
         <View style={styles.card} key={user.id}>
           <Text style={styles.texto}><Text style={styles.label}>Nome:</Text> {user.nome}</Text>
-          <Text style={styles.texto}><Text style={styles.label}>Procedimento:</Text> {user.procedimentos}</Text>
-          <Text style={styles.texto}><Text style={styles.label}>Horário:</Text> {user.horario}</Text>
+          <Text style={styles.texto}><Text style={styles.label}>Procedimento:</Text> {user.cpf}</Text>
+          <Text style={styles.texto}><Text style={styles.label}>Horário:</Text> {user.endereco}</Text>
 
           <View style={styles.botoes}>
             <TouchableOpacity style={styles.botao}>
