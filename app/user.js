@@ -12,7 +12,7 @@ export default function Index() {
   // Busca pacientes da API
   const getPaciente = async () => {
     try {
-      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/teste");
+      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/mostrarPacienteMob");
       const data = await response.json();
       setPaciente(data.data);
     } catch (error) {
@@ -46,7 +46,7 @@ export default function Index() {
       <View style={styles.content}>
         {filteredPacientes.map((user) => (
           <View style={styles.pac} key={user.id}>
-            <View style={styles.tituloAt}>
+            <View style={styles.tituloAt}>0
               <TouchableOpacity
                 style={styles.info}
                 onPress={() => router.push(`/perfpaci?id=${user.id}`)}

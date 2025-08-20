@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#000000',
-    fontSize: 14,
+    fontSize: 14
   },
   imagem: {
     width: 30,
