@@ -29,7 +29,9 @@ export default function Index() {
             <Text style={styles.label}>Nome:</Text> {user.nome_paciente}
           </Text>
           <Text style={styles.texto}>
-            <Text style={styles.label}>Procedimento:</Text> {user.nome}
+            <Text style={styles.label}>Procedimento:</Text> {user.nome
+              
+            }
           </Text>
           <Text style={styles.texto}>
             <Text style={styles.label}>Horário:</Text> {user.hora}

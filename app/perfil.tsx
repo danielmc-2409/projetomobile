@@ -1,67 +1,178 @@
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Agenda, Grupo, Boneco, Lapis, Plus} from '@/assets/components/HeroIcon'; 
+import React, { useState } from "react";
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, Modal } from "react-native";
+import { Lapis, Plus } from '@/assets/components/HeroIcon'; 
 
-const procedimentos = [
-  { id: 1, nome: "Extração Simples", tempo: 20 },
-  { id: 2, nome: "Extração de Siso", tempo: 45 },
-  { id: 3, nome: "Limpeza Dentária", tempo: 30 },
-  { id: 4, nome: "Canal (Pré-molar)", tempo: 90 },
-  { id: 5, nome: "Restauração de Cárie", tempo: 40 },
-  { id: 6, nome: "Aplicação de Flúor", tempo: 15 },
-  { id: 7, nome: "Clareamento Dentário", tempo: 60 },
-  { id: 8, nome: "Consulta Inicial", tempo: 25 },
-  { id: 9, nome: "Avaliação Ortodôntica", tempo: 35 },
-  { id: 10, nome: "Instalação de Aparelho", tempo: 50 },
-  { id: 11, nome: "Troca de Borrachinha", tempo: 10 },
-  { id: 12, nome: "Raio-X Panorâmico", tempo: 15 },
-  { id: 13, nome: "Periodontia (raspagem)", tempo: 60 },
-  { id: 14, nome: "Prótese Dentária", tempo: 75 },
-  { id: 15, nome: "Implante Dentário", tempo: 120 }
+const procedimentosIniciais = [
+  { id: 1, nome: "Extração Simples", tempo: 20, preco: 150, descricao: "Extração de dente simples" },
+  { id: 2, nome: "Limpeza Dentária", tempo: 30, preco: 100, descricao: "Limpeza profissional" },
+  { id: 3, nome: "Clareamento Dentário", tempo: 60, preco: 400, descricao: "Clareamento com gel" },
 ];
 
 export default function Index() {
+  const [procedimentos, setProcedimentos] = useState(procedimentosIniciais);
+
+  // Controle dos modais
+  const [modalCadastrar, setModalCadastrar] = useState(false);
+  const [modalEditar, setModalEditar] = useState(false);
+  const [itemSelecionado, setItemSelecionado] = useState(null);
+
+  // Estados do formulário
+  const [nome, setNome] = useState("");
+  const [tempo, setTempo] = useState("");
+  const [preco, setPreco] = useState("");
+  const [descricao, setDescricao] = useState("");
+
+  // Resetar formulário
+  const limparForm = () => {
+    setNome("");
+    setTempo("");
+    setPreco("");
+    setDescricao("");
+  };
+
+  // Abrir modal de cadastro
+  const abrirCadastrar = () => {
+    limparForm();
+    setModalCadastrar(true);
+  };
+
+  // Salvar novo procedimento
+  const salvarCadastrar = () => {
+    if (!nome || !tempo || !preco) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
+      return;
+    }
+    setProcedimentos((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        nome,
+        tempo: parseInt(tempo),
+        preco: parseFloat(preco),
+        descricao,
+      },
+    ]);
+    setModalCadastrar(false);
+    limparForm();
+  };
+
+  // Abrir modal de edição
+  const abrirEditar = (item) => {
+    setItemSelecionado(item);
+    setNome(item.nome);
+    setTempo(String(item.tempo));
+    setPreco(String(item.preco));
+    setDescricao(item.descricao);
+    setModalEditar(true);
+  };
+
+  // Salvar edição
+  const salvarEditar = () => {
+    setProcedimentos((prev) =>
+      prev.map((p) =>
+        p.id === itemSelecionado.id ? { ...p, nome, tempo, preco, descricao } : p
+      )
+    );
+    setModalEditar(false);
+    limparForm();
+  };
+
+  // Excluir procedimento
+  const excluir = () => {
+    Alert.alert("Confirmar", "Deseja excluir este procedimento?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Excluir",
+        style: "destructive",
+        onPress: () => {
+          setProcedimentos((prev) => prev.filter((p) => p.id !== itemSelecionado.id));
+          setModalEditar(false);
+          limparForm();
+        },
+      },
+    ]);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.cadastrar}>
           <Text style={styles.textobotao}>Cadastrar Procedimento</Text>
-           <TouchableOpacity >
-           <Plus size={30} color="black" />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={abrirCadastrar}>
+            <Plus size={30} color="black" />
+          </TouchableOpacity>
         </View>
-<View  style={styles.titulo}>
-  <Text style={styles.proctitulo}>Procedimentos Cadastrados:</Text>
-</View>
+
+        <View style={styles.titulo}>
+          <Text style={styles.proctitulo}>Procedimentos Cadastrados:</Text>
+        </View>
+
         {procedimentos.map((item) => (
           <View style={styles.proc} key={item.id}>
-            <View style={styles.tituloAt}>
+            <View>
               <Text style={styles.nome}>{item.nome}</Text>
               <Text style={styles.tempo}>{item.tempo} min</Text>
+              <Text style={styles.preco}>R$ {item.preco}</Text>
             </View>
-            <View>
-              <TouchableOpacity>
-           <Lapis size={30} color="black" />
-        </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => abrirEditar(item)}>
+              <Lapis size={30} color="black" />
+            </TouchableOpacity>
           </View>
         ))}
       </View>
+
+      {/* MODAL CADASTRAR */}
+      <Modal visible={modalCadastrar} transparent={true} animationType="fade">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitulo}>Cadastrar Procedimento</Text>
+            <TextInput style={styles.input} placeholder="Nome do procedimento" value={nome} onChangeText={setNome} />
+            <TextInput style={styles.input} placeholder="Tempo (min)" value={tempo} onChangeText={setTempo} keyboardType="numeric" />
+            <TextInput style={styles.input} placeholder="Preço (R$)" value={preco} onChangeText={setPreco} keyboardType="numeric" />
+            <TextInput style={styles.input} placeholder="Descrição" value={descricao} onChangeText={setDescricao} />
+
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.btn, { backgroundColor: "gray" }]} onPress={() => setModalCadastrar(false)}>
+                <Text style={styles.btnText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={salvarCadastrar}>
+                <Text style={styles.btnText}>Salvar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* MODAL EDITAR */}
+      <Modal visible={modalEditar} transparent={true} animationType="fade">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitulo}>Editar: {itemSelecionado?.nome}</Text>
+            <TextInput style={styles.input} placeholder="Novo preço" value={preco} onChangeText={setPreco} keyboardType="numeric" />
+            <TextInput style={styles.input} placeholder="Nova duração (min)" value={tempo} onChangeText={setTempo} keyboardType="numeric" />
+            <TextInput style={styles.input} placeholder="Nova descrição" value={descricao} onChangeText={setDescricao} />
+
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.btn, { backgroundColor: "red" }]} onPress={excluir}>
+                <Text style={styles.btnText}>Excluir</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.btn, { backgroundColor: "gray" }]} onPress={() => setModalEditar(false)}>
+                <Text style={styles.btnText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={salvarEditar}>
+                <Text style={styles.btnText}>Salvar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#D9D9D9',
-  },
-
-  content: {
-    alignItems: 'center',
-    width: "100%",
-    paddingVertical: 20,
-  },
-
+  container: { flex: 1, backgroundColor: '#D9D9D9' },
+  content: { alignItems: 'center', width: "100%", paddingVertical: 20 },
   cadastrar: {
     backgroundColor: '#FFFFFF',
     width: "85%",
@@ -69,17 +180,12 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 10,
     flexDirection: 'row',
-  justifyContent: "space-between",
+    justifyContent: "space-between",
     alignItems: 'center',
     marginBottom: 20,
-    padding:15
+    padding: 15
   },
-
-  textobotao: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
+  textobotao: { fontSize: 16, fontWeight: 'bold' },
   proc: {
     width: "85%",
     backgroundColor: '#FFFFFF',
@@ -87,37 +193,44 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 9,
     paddingHorizontal: 15,
-   flexDirection: 'row',
-  justifyContent: "space-between",
-  alignItems: 'center'
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: 'center'
   },
+  nome: { fontSize: 18, fontWeight: 'bold' },
+  tempo: { fontSize: 16, color: '#666' },
+  preco: { fontSize: 16, color: '#333' },
+  titulo: { marginBlock: 30 },
+  proctitulo: { fontSize: 18, fontWeight: 'bold' },
 
-  tituloAt: {
-   
+  // MODAL ESTILO
+  modalFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center"
   },
-
-  nome: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  modalCard: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
   },
-
-  tempo: {
-    fontSize: 16,
-    color: '#666',
+  modalTitulo: { fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center" },
+  input: {
+    borderWidth: 1, borderColor: "#ccc", borderRadius: 8,
+    padding: 12, marginVertical: 8,
   },
-
-
-
-
-
-
-  titulo:{
-    
-    marginBlock: 30
+  btn: {
+    backgroundColor: "#333", padding: 12, borderRadius: 8,
+    alignItems: "center", marginTop: 20, flex: 1,
   },
-
-  proctitulo:{
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
+  btnText: { color: "#fff", fontWeight: "bold" },
+  row: { flexDirection: "row", justifyContent: "space-between", gap: 10 },
 });
+
