@@ -1,47 +1,69 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, Modal } from "react-native";
-import { Lapis, Plus } from '@/assets/components/HeroIcon'; 
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Modal,
+} from "react-native";
+import { Lapis, Plus } from "@/assets/components/HeroIcon";
 
 const procedimentosIniciais = [
-  { id: 1, nome: "Extração Simples", tempo: 20, preco: 150, descricao: "Extração de dente simples" },
-  { id: 2, nome: "Limpeza Dentária", tempo: 30, preco: 100, descricao: "Limpeza profissional" },
-  { id: 3, nome: "Clareamento Dentário", tempo: 60, preco: 400, descricao: "Clareamento com gel" },
+  {
+    id: 1,
+    nome: "Extração Simples",
+    tempo: 20,
+    preco: 150,
+    descricao: "Extração de dente simples",
+  },
+  {
+    id: 2,
+    nome: "Limpeza Dentária",
+    tempo: 30,
+    preco: 100,
+    descricao: "Limpeza profissional",
+  },
+  {
+    id: 3,
+    nome: "Clareamento Dentário",
+    tempo: 60,
+    preco: 400,
+    descricao: "Clareamento com gel",
+  },
 ];
 
 export default function Index() {
   const [procedimentos, setProcedimentos] = useState(procedimentosIniciais);
 
-  // Controle dos modais
   const [modalCadastrar, setModalCadastrar] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
 
-  // Estados do formulário
   const [nome, setNome] = useState("");
   const [tempo, setTempo] = useState("");
   const [preco, setPreco] = useState("");
-  const [descricao, setDescricao] = useState("");
 
-  // Resetar formulário
   const limparForm = () => {
     setNome("");
     setTempo("");
     setPreco("");
-    setDescricao("");
+    setItemSelecionado(null);
   };
 
-  // Abrir modal de cadastro
   const abrirCadastrar = () => {
     limparForm();
     setModalCadastrar(true);
   };
 
-  // Salvar novo procedimento
   const salvarCadastrar = () => {
     if (!nome || !tempo || !preco) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
       return;
     }
+
     setProcedimentos((prev) => [
       ...prev,
       {
@@ -49,35 +71,44 @@ export default function Index() {
         nome,
         tempo: parseInt(tempo),
         preco: parseFloat(preco),
-        descricao,
       },
     ]);
+
     setModalCadastrar(false);
     limparForm();
   };
 
-  // Abrir modal de edição
   const abrirEditar = (item) => {
     setItemSelecionado(item);
     setNome(item.nome);
     setTempo(String(item.tempo));
     setPreco(String(item.preco));
-    setDescricao(item.descricao);
     setModalEditar(true);
   };
 
-  // Salvar edição
   const salvarEditar = () => {
+    if (!nome || !tempo || !preco) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
+      return;
+    }
+
     setProcedimentos((prev) =>
       prev.map((p) =>
-        p.id === itemSelecionado.id ? { ...p, nome, tempo, preco, descricao } : p
+        p.id === itemSelecionado.id
+          ? {
+              ...p,
+              nome,
+              tempo: parseInt(tempo),
+              preco: parseFloat(preco),
+            }
+          : p
       )
     );
+
     setModalEditar(false);
     limparForm();
   };
 
-  // Excluir procedimento
   const excluir = () => {
     Alert.alert("Confirmar", "Deseja excluir este procedimento?", [
       { text: "Cancelar", style: "cancel" },
@@ -85,7 +116,9 @@ export default function Index() {
         text: "Excluir",
         style: "destructive",
         onPress: () => {
-          setProcedimentos((prev) => prev.filter((p) => p.id !== itemSelecionado.id));
+          setProcedimentos((prev) =>
+            prev.filter((p) => p.id !== itemSelecionado.id)
+          );
           setModalEditar(false);
           limparForm();
         },
@@ -126,13 +159,32 @@ export default function Index() {
         <View style={styles.modalFundo}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitulo}>Cadastrar Procedimento</Text>
-            <TextInput style={styles.input} placeholder="Nome do procedimento" value={nome} onChangeText={setNome} />
-            <TextInput style={styles.input} placeholder="Tempo (min)" value={tempo} onChangeText={setTempo} keyboardType="numeric" />
-            <TextInput style={styles.input} placeholder="Preço (R$)" value={preco} onChangeText={setPreco} keyboardType="numeric" />
-            <TextInput style={styles.input} placeholder="Descrição" value={descricao} onChangeText={setDescricao} />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome do procedimento"
+              value={nome}
+              onChangeText={setNome}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Tempo (min)"
+              value={tempo}
+              onChangeText={setTempo}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Preço (R$)"
+              value={preco}
+              onChangeText={setPreco}
+              keyboardType="numeric"
+            />
 
             <View style={styles.row}>
-              <TouchableOpacity style={[styles.btn, { backgroundColor: "gray" }]} onPress={() => setModalCadastrar(false)}>
+              <TouchableOpacity
+                style={[styles.btn, { backgroundColor: "gray" }]}
+                onPress={() => setModalCadastrar(false)}
+              >
                 <Text style={styles.btnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btn} onPress={salvarCadastrar}>
@@ -147,16 +199,42 @@ export default function Index() {
       <Modal visible={modalEditar} transparent={true} animationType="fade">
         <View style={styles.modalFundo}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitulo}>Editar: {itemSelecionado?.nome}</Text>
-            <TextInput style={styles.input} placeholder="Novo preço" value={preco} onChangeText={setPreco} keyboardType="numeric" />
-            <TextInput style={styles.input} placeholder="Nova duração (min)" value={tempo} onChangeText={setTempo} keyboardType="numeric" />
-            <TextInput style={styles.input} placeholder="Nova descrição" value={descricao} onChangeText={setDescricao} />
+            <Text style={styles.modalTitulo}>
+              Editar: {itemSelecionado?.nome}
+            </Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Nome do procedimento"
+              value={nome}
+              onChangeText={setNome}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Tempo (min)"
+              value={tempo}
+              onChangeText={setTempo}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Preço (R$)"
+              value={preco}
+              onChangeText={setPreco}
+              keyboardType="numeric"
+            />
 
             <View style={styles.row}>
-              <TouchableOpacity style={[styles.btn, { backgroundColor: "red" }]} onPress={excluir}>
+              <TouchableOpacity
+                style={[styles.btn, { backgroundColor: "red" }]}
+                onPress={excluir}
+              >
                 <Text style={styles.btnText}>Excluir</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.btn, { backgroundColor: "gray" }]} onPress={() => setModalEditar(false)}>
+              <TouchableOpacity
+                style={[styles.btn, { backgroundColor: "gray" }]}
+                onPress={() => setModalEditar(false)}
+              >
                 <Text style={styles.btnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btn} onPress={salvarEditar}>
@@ -171,44 +249,44 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#D9D9D9' },
-  content: { alignItems: 'center', width: "100%", paddingVertical: 20 },
+  container: { flex: 1, backgroundColor: "#D9D9D9" },
+  content: { alignItems: "center", width: "100%", paddingVertical: 20 },
   cadastrar: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     width: "85%",
     height: 41,
     marginTop: 40,
     borderRadius: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
-    padding: 15
+    padding: 15,
   },
-  textobotao: { fontSize: 16, fontWeight: 'bold' },
+  textobotao: { fontSize: 16, fontWeight: "bold" },
   proc: {
     width: "85%",
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     height: 91,
     borderRadius: 10,
     marginVertical: 9,
     paddingHorizontal: 15,
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center'
+    alignItems: "center",
   },
-  nome: { fontSize: 18, fontWeight: 'bold' },
-  tempo: { fontSize: 16, color: '#666' },
-  preco: { fontSize: 16, color: '#333' },
-  titulo: { marginBlock: 30 },
-  proctitulo: { fontSize: 18, fontWeight: 'bold' },
+  nome: { fontSize: 18, fontWeight: "bold" },
+  tempo: { fontSize: 16, color: "#666" },
+  preco: { fontSize: 16, color: "#333" },
+  titulo: { marginVertical: 30 },
+  proctitulo: { fontSize: 18, fontWeight: "bold" },
 
-  // MODAL ESTILO
+  // Modal
   modalFundo: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   modalCard: {
     width: "85%",
@@ -219,18 +297,33 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
-  modalTitulo: { fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center" },
+  modalTitulo: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
   input: {
-    borderWidth: 1, borderColor: "#ccc", borderRadius: 8,
-    padding: 12, marginVertical: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 8,
   },
   btn: {
-    backgroundColor: "#333", padding: 12, borderRadius: 8,
-    alignItems: "center", marginTop: 20, flex: 1,
+    backgroundColor: "#333",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+    flex: 1,
   },
   btnText: { color: "#fff", fontWeight: "bold" },
-  row: { flexDirection: "row", justifyContent: "space-between", gap: 10 },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+  },
 });
-

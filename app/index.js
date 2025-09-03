@@ -6,9 +6,13 @@ export default function Index() {
   const [consultas, setConsultas] = useState([]);
 
   const getConsultas = async () => {
-    const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
-    const consulta = await response.json();
-    setConsultas(consulta.data);
+    try {
+      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
+      const consulta = await response.json();
+      setConsultas(consulta.data);
+    } catch (error) {
+      console.error("Erro ao buscar consultas:", error);
+    }
   };
 
   useEffect(() => {
@@ -23,23 +27,24 @@ export default function Index() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Consultas do Dia</Text>
 
-      {consultas.map((user) => (
-        <View style={styles.card} key={user.id || user.nome}>
+      {consultas.map((user, index) => (
+        <View style={styles.card} key={user.id ?? index}>
           <Text style={styles.texto}>
-            <Text style={styles.label}>Nome:</Text> {user.nome_paciente}
+            <Text style={styles.label}>Nome: </Text>
+            <Text>{user.nome_paciente}</Text>
           </Text>
           <Text style={styles.texto}>
-            <Text style={styles.label}>Procedimento:</Text> {user.nome
-              
-            }
+            <Text style={styles.label}>Procedimento: </Text>
+            <Text>{user.nome}</Text>
           </Text>
           <Text style={styles.texto}>
-            <Text style={styles.label}>Horário:</Text> {user.hora}
+            <Text style={styles.label}>Horário: </Text>
+            <Text>{user.hora}</Text>
           </Text>
 
           <View style={styles.botoes}>
             <TouchableOpacity style={styles.botao}>
-              <Text style={styles.botaoTexto}>Marcar como atendido</Text>
+              <Text style={styles.botaoTexto}>Realizar Consulta</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.lixo} onPress={() => handleRemove(user.id)}>
