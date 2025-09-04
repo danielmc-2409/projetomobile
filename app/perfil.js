@@ -8,15 +8,16 @@ import {
   TextInput,
   Alert,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { Lapis, Plus } from "@/assets/components/HeroIcon";
-
 
 export default function Index() {
   const [procedimentos, setProcedimentos] = useState([]);
   const [modalCadastrar, setModalCadastrar] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [nome, setNome] = useState("");
   const [duracaoEstimada, setDuracaoEstimada] = useState("");
@@ -28,11 +29,16 @@ export default function Index() {
 
   const buscarProcedimentos = async () => {
     try {
-      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/retornar");
+      setLoading(true);
+      const response = await fetch(
+        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/retornar"
+      );
       const data = await response.json();
       setProcedimentos(data);
     } catch (error) {
       Alert.alert("Erro", "Não foi possível carregar os procedimentos.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,15 +61,18 @@ export default function Index() {
     }
 
     try {
-      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/criar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nome,
-          duracaoEstimada: parseInt(duracaoEstimada),
-          preco: parseFloat(preco),
-        }),
-      });
+      const response = await fetch(
+        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/criar",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome,
+            duracaoEstimada: parseInt(duracaoEstimada),
+            preco: parseFloat(preco),
+          }),
+        }
+      );
 
       if (response.ok) {
         await buscarProcedimentos();
@@ -78,12 +87,15 @@ export default function Index() {
   };
 
   const abrirEditar = (item) => {
-    setItemSelecionado(item);
-    setNome(item.nome);
-    setDuracaoEstimada(String(item.duracaoEstimada));
-    setPreco(String(item.preco));
-    setModalEditar(true);
-  };
+  setItemSelecionado(item);
+  setNome(item.nome);
+  const minutos = item.duracao_estimada?.minutes ?? 0;
+  const segundos = item.duracao_estimada?.seconds ?? 0;
+  const totalSegundos = minutos * 60 + segundos;
+  setDuracaoEstimada(String(totalSegundos)); 
+  setPreco(String(item.preco));
+  setModalEditar(true);
+};
 
   const salvarEditar = async () => {
     if (!nome || !duracaoEstimada || !preco) {
@@ -92,16 +104,19 @@ export default function Index() {
     }
 
     try {
-      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/editar", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: itemSelecionado.id_procedimento,
-          nome,
-          duracaoEstimada: parseInt(duracaoEstimada),
-          preco: parseFloat(preco),
-        }),
-      });
+      const response = await fetch(
+        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/editar",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: itemSelecionado.id_procedimento,
+            nome,
+            duracaoEstimada: parseInt(duracaoEstimada),
+            preco: parseFloat(preco),
+          }),
+        }
+      );
 
       if (response.ok) {
         await buscarProcedimentos();
@@ -123,13 +138,16 @@ export default function Index() {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/excluir", {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                id: itemSelecionado.id_procedimento,
-              }),
-            });
+            const response = await fetch(
+              "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/excluir",
+              {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  id: itemSelecionado.id_procedimento,
+                }),
+              }
+            );
 
             if (response.ok) {
               await buscarProcedimentos();
@@ -146,6 +164,14 @@ export default function Index() {
     ]);
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#d4af37" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -160,22 +186,24 @@ export default function Index() {
           <Text style={styles.proctitulo}>Procedimentos Cadastrados:</Text>
         </View>
 
-       {procedimentos.length === 0 ? (
-  <Text>Nenhum procedimento cadastrado.</Text>
-) : (
-  procedimentos.map((item) => (
-    <View style={styles.proc} key={item.id_procedimento}>
-      <View>
-        <Text style={styles.nome}>{item.nome}</Text>
-        <Text style={styles.duracaoEstimada}>{item.duracaoEstimada} min</Text>
-        <Text style={styles.preco}>R$ {item.preco}</Text>
-      </View>
-      <TouchableOpacity onPress={() => abrirEditar(item)}>
-        <Lapis size={30} color="black" />
-      </TouchableOpacity>
-    </View>
-  ))
-)}
+        {procedimentos.length === 0 ? (
+          <Text>Nenhum procedimento cadastrado.</Text>
+        ) : (
+          procedimentos.map((item) => (
+            <View style={styles.proc} key={item.id_procedimento}>
+              <View>
+                <Text style={styles.nome}>{item.nome}</Text>
+               <Text style={styles.duracaoEstimada}>
+  {`${item.duracao_estimada?.minutes ?? 0}h ${item.duracao_estimada?.seconds ?? 0}m`}
+</Text>
+                <Text style={styles.preco}>R$ {item.preco}</Text>
+              </View>
+              <TouchableOpacity onPress={() => abrirEditar(item)}>
+                <Lapis size={30} color="black" />
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </View>
 
       {/* MODAL CADASTRAR */}
@@ -206,7 +234,7 @@ export default function Index() {
 
             <View style={styles.row}>
               <TouchableOpacity
-                style={[styles.btn, { backgroundColor: "gray" }]}
+                style={[styles.btn, { backgroundColor: "#d9d9d9" }]}
                 onPress={() => setModalCadastrar(false)}
               >
                 <Text style={styles.btnText}>Cancelar</Text>
@@ -223,9 +251,7 @@ export default function Index() {
       <Modal visible={modalEditar} transparent={true} animationType="fade">
         <View style={styles.modalFundo}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitulo}>
-              Editar: {itemSelecionado?.nome}
-            </Text>
+            <Text style={styles.modalTitulo}>Editar: {itemSelecionado?.nome}</Text>
 
             <TextInput
               style={styles.input}
@@ -256,7 +282,7 @@ export default function Index() {
                 <Text style={styles.btnText}>Excluir</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btn, { backgroundColor: "gray" }]}
+                style={[styles.btn, { backgroundColor: "#d9d9d9" }]}
                 onPress={() => setModalEditar(false)}
               >
                 <Text style={styles.btnText}>Cancelar</Text>
@@ -273,12 +299,12 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#D9D9D9" },
+  container: { flex: 1, backgroundColor: "#fff" },
   content: { alignItems: "center", width: "100%", paddingVertical: 20 },
   cadastrar: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#d9d9d9",
     width: "85%",
-    height: 41,
+    height: 45,
     marginTop: 40,
     borderRadius: 10,
     flexDirection: "row",
@@ -290,7 +316,7 @@ const styles = StyleSheet.create({
   textobotao: { fontSize: 16, fontWeight: "bold" },
   proc: {
     width: "85%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#d9d9d9",
     height: 91,
     borderRadius: 10,
     marginVertical: 9,
@@ -337,17 +363,22 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   btn: {
-    backgroundColor: "#333",
+    backgroundColor: "#d9d9d9",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 20,
     flex: 1,
   },
-  btnText: { color: "#fff", fontWeight: "bold" },
+  btnText: { color: "#000", fontWeight: "bold" },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 10,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

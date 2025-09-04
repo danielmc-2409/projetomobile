@@ -1,17 +1,21 @@
 import { Lixo } from '@/assets/components/HeroIcon';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 
 export default function Index() {
   const [consultas, setConsultas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getConsultas = async () => {
     try {
+      setLoading(true);
       const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
       const consulta = await response.json();
       setConsultas(consulta.data);
     } catch (error) {
       console.error("Erro ao buscar consultas:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -22,6 +26,10 @@ export default function Index() {
   const handleRemove = (id) => {
     setConsultas((prevConsultas) => prevConsultas.filter(item => item.id !== id));
   };
+
+  if (loading) {
+    return <View style={styles.loader}><ActivityIndicator size="large" color="#d4af37" /></View>;
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -62,7 +70,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 40,
     paddingHorizontal: 20,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#fff",
     alignItems: "center",
   },
 
@@ -73,7 +81,7 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#d9d9d9",
     width: "100%",
     borderRadius: 12,
     padding: 16,
@@ -118,5 +126,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: 'center',
     marginTop: 20
-  }
+  },
+
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

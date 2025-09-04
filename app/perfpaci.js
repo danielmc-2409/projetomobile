@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Lapis, Plus } from "@/assets/components/HeroIcon";
 
 export default function DetalhesPaciente() {
   const { id } = useLocalSearchParams();
@@ -48,23 +49,22 @@ export default function DetalhesPaciente() {
 
   return (
     <View style={styles.container}>
-      {/* Card */}
+      
       <View style={styles.card}>
-        {/* Navigation arrows and title */}
+        
         <View style={styles.navHeader}>
           <Text style={styles.navArrow}>{"<"}</Text>
           <Text style={styles.navTitle}>Dados Pessoais</Text>
           <Text style={styles.navArrow}>{">"}</Text>
         </View>
 
-        {/* Profile Image */}
         <View style={styles.profileImageContainer}>
           {paciente.fotoUrl ? (
             <Image source={{ uri: paciente.fotoUrl }} style={styles.profileImage} />
           ) : (
             <View style={styles.profilePlaceholder} />
           )}
-          {/* Caixa para editar nome */}
+          
           <TextInput
             style={[styles.nomePaciente, styles.inputNome]}
             value={paciente.nome}
@@ -91,15 +91,14 @@ export default function DetalhesPaciente() {
                 placeholderTextColor="#666"
               />
               <TouchableOpacity style={styles.editButton}>
-                <Text style={styles.editIcon}>✏️</Text>
+                <Lapis size={30} color="black" />
               </TouchableOpacity>
             </View>
           ))}
         </ScrollView>
 
-        {/* Plus button */}
         <TouchableOpacity style={styles.plusButton}>
-          <Text style={styles.plusIcon}>+</Text>
+          <Plus size={30} color="black" />
         </TouchableOpacity>
       </View>
     </View>
@@ -111,7 +110,7 @@ const gold = "#c5a234";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff", // fundo branco
+    backgroundColor: "#fff", 
     alignItems: "center",
     paddingTop: 40,
   },
@@ -199,10 +198,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 15,
     bottom: 15,
-    backgroundColor: gold,
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
+    backgroundColor: "#FFF",
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },

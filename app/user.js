@@ -47,7 +47,7 @@ export default function Index() {
 
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />;
+    return <ActivityIndicator size="large" color="#d4af37" style={styles.loader} />;
   }
 
 
@@ -98,13 +98,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#fff",
   },
   pesq: {
     fontSize: 18,
     color: '#989898',
     textAlign: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#d9d9d9",
     width: '90%',
     height: 40,
     borderRadius: 15,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   pac: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#d9d9d9",
     width: "90%",
     height: 100,
     borderRadius: 15,
