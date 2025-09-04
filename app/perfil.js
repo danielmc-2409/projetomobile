@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -11,44 +11,34 @@ import {
 } from "react-native";
 import { Lapis, Plus } from "@/assets/components/HeroIcon";
 
-const procedimentosIniciais = [
-  {
-    id: 1,
-    nome: "Extração Simples",
-    tempo: 20,
-    preco: 150,
-    descricao: "Extração de dente simples",
-  },
-  {
-    id: 2,
-    nome: "Limpeza Dentária",
-    tempo: 30,
-    preco: 100,
-    descricao: "Limpeza profissional",
-  },
-  {
-    id: 3,
-    nome: "Clareamento Dentário",
-    tempo: 60,
-    preco: 400,
-    descricao: "Clareamento com gel",
-  },
-];
 
 export default function Index() {
-  const [procedimentos, setProcedimentos] = useState(procedimentosIniciais);
-
+  const [procedimentos, setProcedimentos] = useState([]);
   const [modalCadastrar, setModalCadastrar] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
 
   const [nome, setNome] = useState("");
-  const [tempo, setTempo] = useState("");
+  const [duracaoEstimada, setDuracaoEstimada] = useState("");
   const [preco, setPreco] = useState("");
+
+  useEffect(() => {
+    buscarProcedimentos();
+  }, []);
+
+  const buscarProcedimentos = async () => {
+    try {
+      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/retornar");
+      const data = await response.json();
+      setProcedimentos(data);
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível carregar os procedimentos.");
+    }
+  };
 
   const limparForm = () => {
     setNome("");
-    setTempo("");
+    setDuracaoEstimada("");
     setPreco("");
     setItemSelecionado(null);
   };
@@ -58,55 +48,71 @@ export default function Index() {
     setModalCadastrar(true);
   };
 
-  const salvarCadastrar = () => {
-    if (!nome || !tempo || !preco) {
+  const salvarCadastrar = async () => {
+    if (!nome || !duracaoEstimada || !preco) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
       return;
     }
 
-    setProcedimentos((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        nome,
-        tempo: parseInt(tempo),
-        preco: parseFloat(preco),
-      },
-    ]);
+    try {
+      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/criar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          duracaoEstimada: parseInt(duracaoEstimada),
+          preco: parseFloat(preco),
+        }),
+      });
 
-    setModalCadastrar(false);
-    limparForm();
+      if (response.ok) {
+        await buscarProcedimentos();
+        setModalCadastrar(false);
+        limparForm();
+      } else {
+        Alert.alert("Erro", "Erro ao cadastrar procedimento.");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Erro de conexão.");
+    }
   };
 
   const abrirEditar = (item) => {
     setItemSelecionado(item);
     setNome(item.nome);
-    setTempo(String(item.tempo));
+    setDuracaoEstimada(String(item.duracaoEstimada));
     setPreco(String(item.preco));
     setModalEditar(true);
   };
 
-  const salvarEditar = () => {
-    if (!nome || !tempo || !preco) {
+  const salvarEditar = async () => {
+    if (!nome || !duracaoEstimada || !preco) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
       return;
     }
 
-    setProcedimentos((prev) =>
-      prev.map((p) =>
-        p.id === itemSelecionado.id
-          ? {
-              ...p,
-              nome,
-              tempo: parseInt(tempo),
-              preco: parseFloat(preco),
-            }
-          : p
-      )
-    );
+    try {
+      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/editar", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: itemSelecionado.id_procedimento,
+          nome,
+          duracaoEstimada: parseInt(duracaoEstimada),
+          preco: parseFloat(preco),
+        }),
+      });
 
-    setModalEditar(false);
-    limparForm();
+      if (response.ok) {
+        await buscarProcedimentos();
+        setModalEditar(false);
+        limparForm();
+      } else {
+        Alert.alert("Erro", "Erro ao editar procedimento.");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Erro de conexão.");
+    }
   };
 
   const excluir = () => {
@@ -115,12 +121,26 @@ export default function Index() {
       {
         text: "Excluir",
         style: "destructive",
-        onPress: () => {
-          setProcedimentos((prev) =>
-            prev.filter((p) => p.id !== itemSelecionado.id)
-          );
-          setModalEditar(false);
-          limparForm();
+        onPress: async () => {
+          try {
+            const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/excluir", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: itemSelecionado.id_procedimento,
+              }),
+            });
+
+            if (response.ok) {
+              await buscarProcedimentos();
+              setModalEditar(false);
+              limparForm();
+            } else {
+              Alert.alert("Erro", "Erro ao excluir procedimento.");
+            }
+          } catch (error) {
+            Alert.alert("Erro", "Erro de conexão.");
+          }
         },
       },
     ]);
@@ -140,18 +160,22 @@ export default function Index() {
           <Text style={styles.proctitulo}>Procedimentos Cadastrados:</Text>
         </View>
 
-        {procedimentos.map((item) => (
-          <View style={styles.proc} key={item.id}>
-            <View>
-              <Text style={styles.nome}>{item.nome}</Text>
-              <Text style={styles.tempo}>{item.tempo} min</Text>
-              <Text style={styles.preco}>R$ {item.preco}</Text>
-            </View>
-            <TouchableOpacity onPress={() => abrirEditar(item)}>
-              <Lapis size={30} color="black" />
-            </TouchableOpacity>
-          </View>
-        ))}
+       {procedimentos.length === 0 ? (
+  <Text>Nenhum procedimento cadastrado.</Text>
+) : (
+  procedimentos.map((item) => (
+    <View style={styles.proc} key={item.id_procedimento}>
+      <View>
+        <Text style={styles.nome}>{item.nome}</Text>
+        <Text style={styles.duracaoEstimada}>{item.duracaoEstimada} min</Text>
+        <Text style={styles.preco}>R$ {item.preco}</Text>
+      </View>
+      <TouchableOpacity onPress={() => abrirEditar(item)}>
+        <Lapis size={30} color="black" />
+      </TouchableOpacity>
+    </View>
+  ))
+)}
       </View>
 
       {/* MODAL CADASTRAR */}
@@ -167,9 +191,9 @@ export default function Index() {
             />
             <TextInput
               style={styles.input}
-              placeholder="Tempo (min)"
-              value={tempo}
-              onChangeText={setTempo}
+              placeholder="Duracao Estimada (min)"
+              value={duracaoEstimada}
+              onChangeText={setDuracaoEstimada}
               keyboardType="numeric"
             />
             <TextInput
@@ -211,9 +235,9 @@ export default function Index() {
             />
             <TextInput
               style={styles.input}
-              placeholder="Tempo (min)"
-              value={tempo}
-              onChangeText={setTempo}
+              placeholder="Duracao Estimada (min)"
+              value={duracaoEstimada}
+              onChangeText={setDuracaoEstimada}
               keyboardType="numeric"
             />
             <TextInput
@@ -276,7 +300,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   nome: { fontSize: 18, fontWeight: "bold" },
-  tempo: { fontSize: 16, color: "#666" },
+  duracaoEstimada: { fontSize: 16, color: "#666" },
   preco: { fontSize: 16, color: "#333" },
   titulo: { marginVertical: 30 },
   proctitulo: { fontSize: 18, fontWeight: "bold" },

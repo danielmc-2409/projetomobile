@@ -24,7 +24,7 @@ export default function Index() {
   const getPaciente = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/mostrarPacienteMob");
+      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/mostrarPacienteMob");
       const data = await response.json();
       setPaciente(data.data);
     } catch (error) {

@@ -7,7 +7,7 @@ export default function Index() {
 
   const getConsultas = async () => {
     try {
-      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
+      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
       const consulta = await response.json();
       setConsultas(consulta.data);
     } catch (error) {

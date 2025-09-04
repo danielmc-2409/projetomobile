@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, TextInput } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function DetalhesPaciente() {
   const { id } = useLocalSearchParams();
@@ -10,7 +10,7 @@ export default function DetalhesPaciente() {
   useEffect(() => {
     const getPacienteDetalhes = async () => {
       try {
-        const response = await fetch(`https://mx2dv4ww-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
+        const response = await fetch(`https://kbj9vsq6-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
         const data = await response.json();
         setPaciente(data.data);
       } catch (error) {
