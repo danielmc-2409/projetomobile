@@ -1,15 +1,17 @@
 import { Lixo } from '@/assets/components/HeroIcon';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function Index() {
   const [consultas, setConsultas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const getConsultas = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://kbj9vsq6-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
+      const response = await fetch("https://2n49k5s7-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
       const consulta = await response.json();
       setConsultas(consulta.data);
     } catch (error) {
@@ -51,7 +53,10 @@ export default function Index() {
           </Text>
 
           <View style={styles.botoes}>
-            <TouchableOpacity style={styles.botao}>
+            <TouchableOpacity 
+              style={styles.botao}
+              onPress={() => router.push("/consulta")}
+            >
               <Text style={styles.botaoTexto}>Realizar Consulta</Text>
             </TouchableOpacity>
 
@@ -73,13 +78,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
   },
-
   titulo: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
-
   card: {
     backgroundColor: "#d9d9d9",
     width: "100%",
@@ -91,16 +94,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-
   texto: {
     fontSize: 16,
     marginBottom: 4,
   },
-
   label: {
     fontWeight: "bold",
   },
-
   botao: {
     backgroundColor: "#FFD700",
     paddingVertical: 10,
@@ -111,23 +111,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
-
   lixo: {
     padding: 10,
   },
-
   botaoTexto: {
     fontWeight: "bold",
     color: "#333",
   },
-
   botoes: {
     flexDirection: 'row',
     justifyContent: "space-between",
     alignItems: 'center',
     marginTop: 20
   },
-
   loader: {
     flex: 1,
     justifyContent: "center",

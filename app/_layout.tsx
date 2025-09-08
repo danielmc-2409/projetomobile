@@ -28,6 +28,9 @@ export default function RootLayout() {
 
               <Stack.Screen name="perfpaci" options={{ title: "Perfil do Paciente" }} />
                 <Stack.Screen name="prontuarios" options={{ title: "Prontuários" }} />
+                <Stack.Screen name="consulta" options={{ title: "Consulta" }} />
+                  <Stack.Screen name="procedimento" options={{ title: "Procedimento" }} />
+                
       </Stack>
 
       <View style={styles.footer}>

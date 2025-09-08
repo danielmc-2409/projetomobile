@@ -1,9 +1,11 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter} from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Lapis, Plus } from "@/assets/components/HeroIcon";
 
+
 export default function DetalhesPaciente() {
+    const router = useRouter();
   const { id } = useLocalSearchParams();
   const [paciente, setPaciente] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ export default function DetalhesPaciente() {
   useEffect(() => {
     const getPacienteDetalhes = async () => {
       try {
-        const response = await fetch(`https://kbj9vsq6-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
+        const response = await fetch(`https://2n49k5s7-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
         const data = await response.json();
         setPaciente(data.data);
       } catch (error) {
@@ -53,9 +55,9 @@ export default function DetalhesPaciente() {
       <View style={styles.card}>
         
         <View style={styles.navHeader}>
-          <Text style={styles.navArrow}>{"<"}</Text>
+          <TouchableOpacity style={styles.navArrow}  onPress={() => router.push("/historicoConsultas")}>{"<"}</TouchableOpacity>
           <Text style={styles.navTitle}>Dados Pessoais</Text>
-          <Text style={styles.navArrow}>{">"}</Text>
+     <TouchableOpacity style={styles.navArrow}  onPress={() => router.push("/historicoConsultas")}>{">"}</TouchableOpacity>
         </View>
 
         <View style={styles.profileImageContainer}>
@@ -97,7 +99,7 @@ export default function DetalhesPaciente() {
           ))}
         </ScrollView>
 
-        <TouchableOpacity style={styles.plusButton}>
+        <TouchableOpacity style={styles.plusButton} onPress={() => router.push("/procedimento")}>
           <Plus size={30} color="black" />
         </TouchableOpacity>
       </View>

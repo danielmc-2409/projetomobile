@@ -31,7 +31,7 @@ export default function Index() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/retornar"
+        "https://2n49k5s7-3000.brs.devtunnels.ms/api/procedimento/retornar"
       );
       const data = await response.json();
       setProcedimentos(data);
