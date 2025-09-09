@@ -13,7 +13,7 @@ export default function DetalhesPaciente() {
   useEffect(() => {
     const getPacienteDetalhes = async () => {
       try {
-        const response = await fetch(`https://2n49k5s7-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
+        const response = await fetch(`https://mx2dv4ww-3000.brs.devtunnels.ms/api/mostrarPacienteMob/${id}`);
         const data = await response.json();
         setPaciente(data.data);
       } catch (error) {

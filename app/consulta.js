@@ -1,21 +1,70 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import * as DocumentPicker from "expo-document-picker";
 import { Upload } from "lucide-react-native";
 
 export default function Consulta() {
+  const [exameFile, setExameFile] = useState(null);
+  const [prescricaoFile, setPrescricaoFile] = useState(null);
+
+  // 📄 Função genérica para selecionar documento
+  const handleFilePick = async (type) => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) return;
+
+      const file = result.assets[0];
+
+      if (type === "exame") {
+        setExameFile(file);
+      } else {
+        setPrescricaoFile(file);
+      }
+
+      console.log("Arquivo selecionado:", file);
+    } catch (error) {
+      console.error("Erro ao selecionar arquivo:", error);
+      Alert.alert("Erro", "Não foi possível anexar o arquivo.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.subtitulo}>Observações e exames</Text>
 
-        <TouchableOpacity style={styles.uploadBox}>
+        {/* Upload de Exames */}
+        <TouchableOpacity
+          style={styles.uploadBox}
+          onPress={() => handleFilePick("exame")}
+        >
           <Text style={styles.textUpload}>Anexar exames</Text>
           <Upload size={40} color="black" />
+          {exameFile && (
+            <Text style={styles.fileName}>📎 {exameFile.name}</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.uploadBox}>
+        {/* Upload de Prescrições */}
+        <TouchableOpacity
+          style={styles.uploadBox}
+          onPress={() => handleFilePick("prescricao")}
+        >
           <Text style={styles.textUpload}>Anexar prescrições</Text>
           <Upload size={40} color="black" />
+          {prescricaoFile && (
+            <Text style={styles.fileName}>📎 {prescricaoFile.name}</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -51,5 +100,10 @@ const styles = StyleSheet.create({
   textUpload: {
     marginBottom: 10,
     fontWeight: "bold",
+  },
+  fileName: {
+    marginTop: 10,
+    color: "#555",
+    fontSize: 14,
   },
 });
