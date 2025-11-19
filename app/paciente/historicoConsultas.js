@@ -1,47 +1,93 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
+
+function formatarDataHora(dataISO, hora) {
+  if (!dataISO) return "";
+
+  // pega apenas AAAA-MM-DD
+  const [year, month, day] = dataISO.split("T")[0].split("-");
+
+  // hora vem como "14:30:00"
+  const horaFormatada = hora ? hora.slice(0, 5) : "00:00";
+
+  return `${day}/${month}/${year} ${horaFormatada}`;
+}
 
 export default function HistoricoConsultas() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const [consultas, setConsultas] = useState([
-    { id: 1, data: "2025-08-01", procedimento: "Limpeza", status: "Concluída" },
-    { id: 2, data: "2025-08-15", procedimento: "Restauração", status: "Agendada" },
-    { id: 3, data: "2025-09-01", procedimento: "Extração", status: "Cancelada" },
-  ]);
+
+  const [consultas, setConsultas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const carregarConsultas = async () => {
+    try {
+      const response = await fetch(
+        `https://xv14dwsm-3000.brs.devtunnels.ms/api/consultas/${id}`
+      );
+      const data = await response.json();
+      setConsultas(data.data);
+    } catch (error) {
+      console.log("Erro ao carregar histórico:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) carregarConsultas();
+  }, [id]);
+
+  if (loading)
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-
-        {/* Header com setas dos dois lados */}
+        {/* HEADER COM SETAS */}
         <View style={styles.navHeader}>
-          <TouchableOpacity onPress={() => router.push("/perfpaci?id=${id}")}>
+          <TouchableOpacity
+            onPress={() => router.push(`/paciente/detalhesPaciente?id=${id}`)}
+          >
             <Text style={styles.navArrow}>{"<"}</Text>
           </TouchableOpacity>
 
           <Text style={styles.navTitle}>Histórico de Consultas</Text>
 
-          <TouchableOpacity onPress={() => console.log("Ação da seta direita")}>
-            <Text style={styles.navArrow} onPress={() => router.push("/perfilPaci?id=${id}")}>{">"}</Text>
+          <TouchableOpacity
+            onPress={() => router.push(`/paciente/detalhesPaciente?id=${id}`)}
+          >
+            <Text style={styles.navArrow}>{">"}</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Tabela de consultas */}
+        {/* Tabela */}
         <View style={styles.tableHeader}>
           <Text style={styles.headerCell}>Data</Text>
           <Text style={styles.headerCell}>Procedimento</Text>
           <Text style={styles.headerCell}>Status</Text>
         </View>
+
         <FlatList
           data={consultas}
-          keyExtractor={(item) => item.id.toString()}
-          style={{ marginTop: 5 }}
+          keyExtractor={(item) => item.id_consulta.toString()}
           renderItem={({ item }) => (
             <View style={styles.tableRow}>
-              <Text style={styles.cell}>{item.data}</Text>
+              <Text style={styles.cell}>  {formatarDataHora(item.data, item.hora)} </Text>
               <Text style={styles.cell}>{item.procedimento}</Text>
+
               <Text
                 style={[
                   styles.cell,
@@ -63,12 +109,8 @@ export default function HistoricoConsultas() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f6f6f6",
-    alignItems: "center",
-    paddingTop: 40,
-  },
+  container: { flex: 1, backgroundColor: "#f6f6f6", alignItems: "center", paddingTop: 40 },
+
   card: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -77,40 +119,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flex: 1,
   },
+
   navHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 15,
   },
-  navArrow: {
-    fontSize: 24,
-    color: "#333",
-  },
-  navTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-  },
+  navArrow: { fontSize: 24, color: "#333" },
+  navTitle: { fontSize: 18, fontWeight: "bold", color: "#333" },
+
   tableHeader: {
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     paddingBottom: 5,
   },
-  headerCell: {
-    flex: 1,
-    fontWeight: "bold",
-    color: "#333",
-  },
+  headerCell: { flex: 1, fontWeight: "bold", color: "#333" },
+
   tableRow: {
     flexDirection: "row",
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  cell: {
-    flex: 1,
-    color: "#333",
-  },
+  cell: { flex: 1, color: "#333" },
 });

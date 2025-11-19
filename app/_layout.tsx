@@ -19,35 +19,33 @@ export default function RootLayout() {
           headerTitleAlign: 'center',
         }}
       >
-        <Stack.Screen name="index" options={{ title: "Agenda" }} />
-        
-           <Stack.Screen name="user" options={{ title: "Pacientes" }} />
-        
+        <Stack.Screen name="nav/agenda" options={{ title: "Agenda" }} />
+        <Stack.Screen name="nav/pacientes" options={{ title: "Pacientes" }} />
+        <Stack.Screen name="nav/procedimentos" options={{ title: "Procedimentos" }} />
+        <Stack.Screen name="paciente/detalhesPaciente" options={{ title: "Perfil do Paciente" }} />
+        <Stack.Screen name="paciente/historicoConsultas" options={{ title: "Histórico de Consulta" }} />
+        <Stack.Screen name="paciente/agendarConsulta" options={{ title: "Agendar Consulta" }} />
 
-        <Stack.Screen name="perfil" options={{ title: "Procedimentos" }} />
-
-              <Stack.Screen name="perfpaci" options={{ title: "Perfil do Paciente" }} />
-                <Stack.Screen name="prontuarios" options={{ title: "Prontuários" }} />
-                <Stack.Screen name="consulta" options={{ title: "Consulta" }} />
-                  <Stack.Screen name="procedimento" options={{ title: "Procedimento" }} />
+        <Stack.Screen name="prontuarios" options={{ title: "Prontuários" }} />
+        <Stack.Screen name="consulta/exames" options={{ title: "Anexar Exames/Prescrição" }} />
                 
       </Stack>
 
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <TouchableOpacity onPress={() => router.push("/nav/agenda")}>
           <View>
             <Agenda size={30} color="black" />
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/user")}>
+        <TouchableOpacity onPress={() => router.push("/nav/pacientes")}>
           <View>
             <Grupo size={30} color="black" />
           </View>
         </TouchableOpacity>
 
         
-        <TouchableOpacity onPress={() => router.push("/perfil")}>
+        <TouchableOpacity onPress={() => router.push("/nav/procedimentos")}>
           <View>
             <Boneco size={30} color="black" />
           </View>
@@ -80,11 +78,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   inputPesquisa: {
-    width: '80%',  // Ajuste para tornar a largura responsiva
-    height: 40,    // Ajuste de altura
+    width: '80%',  
+    height: 40,    
     textAlign: 'center',
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#fff', // Melhor visibilidade para o input
+    backgroundColor: '#fff', 
   },
 });

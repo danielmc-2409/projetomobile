@@ -31,7 +31,7 @@ export default function Index() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://mx2dv4ww-3000.brs.devtunnels.ms/api/procedimento/retornar"
+        "https://xv14dwsm-3000.brs.devtunnels.ms/api/procedimento/retornar"
       );
       const data = await response.json();
       setProcedimentos(data);
@@ -62,7 +62,7 @@ export default function Index() {
 
     try {
       const response = await fetch(
-        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/criar",
+        "https://xv14dwsm-3000.brs.devtunnels.ms/api/procedimento/criar",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -105,7 +105,7 @@ export default function Index() {
 
     try {
       const response = await fetch(
-        "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/editar",
+        "https://xv14dwsm-3000.brs.devtunnels.ms/api/procedimento/editar",
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -139,7 +139,7 @@ export default function Index() {
         onPress: async () => {
           try {
             const response = await fetch(
-              "https://kbj9vsq6-3000.brs.devtunnels.ms/api/procedimento/excluir",
+              "https://xv14dwsm-3000.brs.devtunnels.ms/api/procedimento/excluir",
               {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },

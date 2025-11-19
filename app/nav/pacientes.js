@@ -5,7 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import { Lixo } from '@/assets/components/HeroIcon';
 import React, { useState, useEffect } from 'react';
@@ -24,7 +25,7 @@ export default function Index() {
   const getPaciente = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://mx2dv4ww-3000.brs.devtunnels.ms/api/mostrarPacienteMob");
+      const response = await fetch("https://xv14dwsm-3000.brs.devtunnels.ms/api/mostrarPacienteMob");
       const data = await response.json();
       setPaciente(data.data);
     } catch (error) {
@@ -50,6 +51,40 @@ export default function Index() {
     return <ActivityIndicator size="large" color="#d4af37" style={styles.loader} />;
   }
 
+  const desativarPaciente = async (id) => {
+  try {
+    const response = await fetch(
+      `https://xv14dwsm-3000.brs.devtunnels.ms/api/mostrarPacienteMob/desativar/${id}`,
+      { method: "PUT" }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      Alert.alert("Erro", result.error || "Erro ao desativar paciente.");
+      return;
+    }
+
+    // Remove da lista sem recarregar
+    setPaciente((prev) => prev.filter((p) => p.id !== id));
+
+    Alert.alert("Pronto!", "Paciente desativado com sucesso.");
+  } catch (error) {
+    console.log(error);
+    Alert.alert("Erro", "Não foi possível desativar.");
+  }
+};
+  
+  const confirmarDesativacao = (id) => {
+  Alert.alert(
+    "Desativar Paciente",
+    "Tem certeza que deseja desativar este paciente? Ele não aparecerá mais na lista.",
+    [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Desativar", onPress: () => desativarPaciente(id), style: "destructive" }
+    ]
+  );
+};
 
   return (
     <ScrollView style={styles.container}>
@@ -71,7 +106,7 @@ export default function Index() {
             <View style={styles.tituloAt}>
               <TouchableOpacity
                 style={styles.info}
-                onPress={() => router.push(`/perfpaci?id=${user.id}`)}
+                onPress={() => router.push(`/paciente/detalhesPaciente?id=${user.id}`)}
               >
                 <Text style={styles.nome}>{user.nome}</Text>
                 <Text style={styles.idade}>{user.idade} anos</Text>
@@ -79,12 +114,9 @@ export default function Index() {
 
 
               <TouchableOpacity
-                onPress={() =>
-                  setPaciente(paciente.filter(item => item.id !== user.id))
-                }
-              >
-                <Lixo size={30} color="black" />
-              </TouchableOpacity>
+              onPress={() => confirmarDesativacao(user.id)}>
+  <Lixo size={30} color="black" />
+</TouchableOpacity>
             </View>
           </View>
         ))}
