@@ -1,109 +1,71 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import { Upload } from "lucide-react-native";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function Consulta() {
-  const [exameFile, setExameFile] = useState(null);
-  const [prescricaoFile, setPrescricaoFile] = useState(null);
+  const router = useRouter();
 
-  // 📄 Função genérica para selecionar documento
-  const handleFilePick = async (type) => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
-        copyToCacheDirectory: true,
-      });
+  // 🔥 RECEBE O ID EXATAMENTE COMO NO SEU CÓDIGO MODELO
+  const { id_consulta, id_paciente } = useLocalSearchParams();
 
-      if (result.canceled) return;
+  const onLeftPress = () => {
+    router.push({
+      pathname: "/consulta/odontograma",
+      params: { id_consulta, id_paciente }
+    });
+  };
 
-      const file = result.assets[0];
-
-      if (type === "exame") {
-        setExameFile(file);
-      } else {
-        setPrescricaoFile(file);
-      }
-
-      console.log("Arquivo selecionado:", file);
-    } catch (error) {
-      console.error("Erro ao selecionar arquivo:", error);
-      Alert.alert("Erro", "Não foi possível anexar o arquivo.");
-    }
+  const onRightPress = () => {
+    router.push({
+      pathname: "/consulta/odontograma", 
+      params: { id_consulta, id_paciente }
+    });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
+        <View style={styles.navHeader}>
+          <TouchableOpacity onPress={onLeftPress}>
+            <Text style={styles.navArrowText}>{"<"}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.navTitle}>Odontograma</Text>
+
+          <TouchableOpacity onPress={onRightPress}>
+            <Text style={styles.navArrowText}>{">"}</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.subtitulo}>Observações e exames</Text>
 
-        {/* Upload de Exames */}
-        <TouchableOpacity
-          style={styles.uploadBox}
-          onPress={() => handleFilePick("exame")}
-        >
-          <Text style={styles.textUpload}>Anexar exames</Text>
-          <Upload size={40} color="black" />
-          {exameFile && (
-            <Text style={styles.fileName}>📎 {exameFile.name}</Text>
-          )}
-        </TouchableOpacity>
+        <Text style={{ marginTop: 40, fontSize: 16 }}>
+          Nenhum envio de exames necessário.
+        </Text>
 
-        {/* Upload de Prescrições */}
-        <TouchableOpacity
-          style={styles.uploadBox}
-          onPress={() => handleFilePick("prescricao")}
-        >
-          <Text style={styles.textUpload}>Anexar prescrições</Text>
-          <Upload size={40} color="black" />
-          {prescricaoFile && (
-            <Text style={styles.fileName}>📎 {prescricaoFile.name}</Text>
-          )}
-        </TouchableOpacity>
+        
+
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
   content: {
     flex: 1,
     backgroundColor: "#e0e0e0",
     padding: 20,
     alignItems: "center",
   },
-  subtitulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  uploadBox: {
-    backgroundColor: "#fff",
+  subtitulo: { fontSize: 18, fontWeight: "bold", marginBottom: 20 },
+
+  navHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "90%",
-    padding: 20,
-    borderRadius: 10,
+    marginTop: 40,
     alignItems: "center",
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#ccc",
   },
-  textUpload: {
-    marginBottom: 10,
-    fontWeight: "bold",
-  },
-  fileName: {
-    marginTop: 10,
-    color: "#555",
-    fontSize: 14,
-  },
+  navArrowText: { fontSize: 26, fontWeight: "bold", color: "#333" },
+  navTitle: { fontSize: 18, fontWeight: "bold", color: "#333" },
 });

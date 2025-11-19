@@ -1,6 +1,9 @@
 import { Lixo } from '@/assets/components/HeroIcon';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import {
+  ScrollView, StyleSheet, Text, TouchableOpacity, View,
+  ActivityIndicator, Alert
+} from "react-native";
 import { useRouter } from "expo-router";
 
 export default function Index() {
@@ -13,7 +16,9 @@ export default function Index() {
       setLoading(true);
       const response = await fetch("https://xv14dwsm-3000.brs.devtunnels.ms/api/consultas/mostrarConsultaMob");
       const consulta = await response.json();
-      setConsultas(consulta.data);
+console.log("RESPOSTA DA API ===>", consulta);
+
+setConsultas(consulta.data || []);
     } catch (error) {
       console.error("Erro ao buscar consultas:", error);
     } finally {
@@ -25,8 +30,47 @@ export default function Index() {
     getConsultas();
   }, []);
 
-  const handleRemove = (id) => {
-    setConsultas((prevConsultas) => prevConsultas.filter(item => item.id !== id));
+  const cancelarConsulta = async (id_consulta) => {
+  try {
+    const response = await fetch(
+      "https://xv14dwsm-3000.brs.devtunnels.ms/api/consultas/cancelar",
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_consulta })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      Alert.alert("Erro", result.error || "Erro ao cancelar consulta.");
+      return;
+    }
+
+    setConsultas(prev => prev.filter(c => c.id_consulta !== id_consulta));
+
+    Alert.alert("Pronto!", "Consulta cancelada com sucesso.");
+
+  } catch (error) {
+    console.log(error);
+    Alert.alert("Erro", "Não foi possível cancelar.");
+  }
+};
+
+  const confirmarCancelamento = (id_consulta) => {
+    Alert.alert(
+      "Cancelar Consulta",
+      "Tem certeza que deseja cancelar?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Sim",
+          style: "destructive",
+          onPress: () => cancelarConsulta(id_consulta)
+        }
+      ]
+    );
   };
 
   if (loading) {
@@ -37,32 +81,39 @@ export default function Index() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Consultas do Dia</Text>
 
-      {consultas.map((user, index) => (
-        <View style={styles.card} key={user.id ?? index}>
-          <Text style={styles.texto}>
-            <Text style={styles.label}>Nome: </Text>
-            <Text>{user.nome_paciente}</Text>
-          </Text>
-          <Text style={styles.texto}>
-            <Text style={styles.label}>Procedimento: </Text>
-            <Text>{user.nome}</Text>
-          </Text>
-          <Text style={styles.texto}>
-            <Text style={styles.label}>Horário: </Text>
-            <Text>{user.hora}</Text>
-          </Text>
+      {consultas.map((item, index) => (
+        <View style={styles.card} key={item.id_consulta ?? index}>
+
+          <Text style={styles.texto}><Text style={styles.label}>Nome: </Text>{item.nome_paciente}</Text>
+          <Text style={styles.texto}><Text style={styles.label}>Procedimento: </Text>{item.procedimento}</Text>
+          <Text style={styles.texto}><Text style={styles.label}>Horário: </Text>{item.hora}</Text>
 
           <View style={styles.botoes}>
-            <TouchableOpacity 
+
+            {/* REALIZAR CONSULTA */}
+            <TouchableOpacity
               style={styles.botao}
-              onPress={() => router.push("/consulta")}
-            >
+               onPress={() =>
+                router.push({
+                pathname: "/consulta/exames",
+                params: { 
+                id_consulta: item.id_consulta, 
+                id_paciente: item.id_paciente 
+      }
+    })
+  }
+>
               <Text style={styles.botaoTexto}>Realizar Consulta</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.lixo} onPress={() => handleRemove(user.id)}>
+            {/* CANCELAR */}
+            <TouchableOpacity
+              style={styles.lixo}
+              onPress={() => confirmarCancelamento(item.id_consulta)}
+            >
               <Lixo size={30} color="black" />
             </TouchableOpacity>
+
           </View>
         </View>
       ))}
@@ -89,44 +140,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
-  texto: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  label: {
-    fontWeight: "bold",
-  },
+  texto: { fontSize: 16, marginBottom: 4 },
+  label: { fontWeight: "bold" },
   botao: {
     backgroundColor: "#FFD700",
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
     marginRight: 10,
   },
-  lixo: {
-    padding: 10,
-  },
-  botaoTexto: {
-    fontWeight: "bold",
-    color: "#333",
-  },
-  botoes: {
-    flexDirection: 'row',
-    justifyContent: "space-between",
-    alignItems: 'center',
-    marginTop: 20
-  },
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  botaoTexto: { fontWeight: "bold", color: "#333", textAlign: "center" },
+  lixo: { padding: 10 },
+  botoes: { flexDirection: 'row', marginTop: 20 },
+  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

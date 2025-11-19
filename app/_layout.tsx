@@ -25,8 +25,7 @@ export default function RootLayout() {
         <Stack.Screen name="paciente/detalhesPaciente" options={{ title: "Perfil do Paciente" }} />
         <Stack.Screen name="paciente/historicoConsultas" options={{ title: "Histórico de Consulta" }} />
         <Stack.Screen name="paciente/agendarConsulta" options={{ title: "Agendar Consulta" }} />
-
-        <Stack.Screen name="prontuarios" options={{ title: "Prontuários" }} />
+        <Stack.Screen name="consulta/odontograma" options={{ title: "Odontograma" }} />
         <Stack.Screen name="consulta/exames" options={{ title: "Anexar Exames/Prescrição" }} />
                 
       </Stack>
