@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Lapis, Plus } from "@/assets/components/HeroIcon";
+import ProtectedScreen from '../portecaoTelas';
 
 export default function Index() {
   const [procedimentos, setProcedimentos] = useState([]);
@@ -173,6 +174,7 @@ export default function Index() {
   }
 
   return (
+    <ProtectedScreen>
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.cadastrar}>
@@ -295,6 +297,7 @@ export default function Index() {
         </View>
       </Modal>
     </ScrollView>
+    </ProtectedScreen>
   );
 }
 

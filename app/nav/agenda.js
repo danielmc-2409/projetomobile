@@ -5,6 +5,7 @@ import {
   ActivityIndicator, Alert
 } from "react-native";
 import { useRouter } from "expo-router";
+import ProtectedScreen from '../portecaoTelas';
 
 export default function Index() {
   const [consultas, setConsultas] = useState([]);
@@ -78,6 +79,7 @@ setConsultas(consulta.data || []);
   }
 
   return (
+    <ProtectedScreen>
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Consultas do Dia</Text>
 
@@ -118,6 +120,7 @@ setConsultas(consulta.data || []);
         </View>
       ))}
     </ScrollView>
+    </ProtectedScreen>
   );
 }
 

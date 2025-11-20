@@ -11,6 +11,7 @@ import {
 import { Lixo } from '@/assets/components/HeroIcon';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "expo-router";
+import ProtectedScreen from '../portecaoTelas';
 
 
 export default function Index() {
@@ -87,6 +88,7 @@ export default function Index() {
 };
 
   return (
+    <ProtectedScreen>
     <ScrollView style={styles.container}>
       <View style={styles.pesquisa}>
         <TextInput
@@ -122,6 +124,7 @@ export default function Index() {
         ))}
       </View>
     </ScrollView>
+    </ProtectedScreen>
   );
 }
 
