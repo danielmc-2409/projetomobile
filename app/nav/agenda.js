@@ -95,7 +95,7 @@ setConsultas(consulta.data || []);
               style={styles.botao}
                onPress={() =>
                 router.push({
-                pathname: "/consulta/exames",
+                pathname: "/consulta/realizarConsulta",
                 params: { 
                 id_consulta: item.id_consulta, 
                 id_paciente: item.id_paciente 
